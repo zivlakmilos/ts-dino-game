@@ -1,7 +1,8 @@
 import Phaser from "phaser";
+import Player from "../entities/Player";
 
 class PlayScene extends Phaser.Scene {
-  player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  player: Player;
   startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
   constructor() {
@@ -20,11 +21,10 @@ class PlayScene extends Phaser.Scene {
       .setAlpha(0)
       .setOrigin(0, 1);
 
-    this.registerPlayerControl();
-
     this.physics.add.overlap(this.startTrigger, this.player, () => {
     });
   }
+
   createEnvironment() {
     this.add
       .tileSprite(0, this.gameHeight, 88, 26, 'ground')
@@ -32,20 +32,10 @@ class PlayScene extends Phaser.Scene {
   }
 
   createPlayer() {
-    this.player = this.physics.add.sprite(0, this.gameHeight, 'dino-idle').setOrigin(0, 1);
-
-    this.player
-      .setGravityY(5000)
-      .setCollideWorldBounds(true)
-      .setBodySize(44, 92);
+    this.player = new Player(this, 0, this.gameHeight);
   }
 
-  registerPlayerControl() {
-    const spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-    spaceBar.on('down', () => {
-      this.player.setVelocityY(-1600);
-    });
+  update(time: number, delta: number): void {
   }
 }
 
