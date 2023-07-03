@@ -1,22 +1,14 @@
 import Phaser from "phaser";
 import Player from "../entities/Player";
+import GameScene from "./GameScene";
 
-class PlayScene extends Phaser.Scene {
+class PlayScene extends GameScene {
   player: Player;
   ground: Phaser.GameObjects.TileSprite;
   startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-  isGameRunning: boolean = false;
 
   constructor() {
     super('PlayScene');
-  }
-
-  get gameHeight() {
-    return this.game.config.height as number;
-  }
-
-  get gameWidth() {
-    return this.game.config.width as number;
   }
 
   create() {

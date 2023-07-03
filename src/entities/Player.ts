@@ -1,9 +1,11 @@
 import Phaser from "phaser";
+import GameScene from "../scenes/GameScene";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+  scene: GameScene;
 
-  constructor(scene: Phaser.Scene, x: number, y: number) {
+  constructor(scene: GameScene, x: number, y: number) {
     super(scene, x, y, 'dino-idle');
 
     scene.add.existing(this);
@@ -36,7 +38,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setVelocityY(-1600);
     }
 
-    if (!(this.scene as any).isGameRunning) {
+    if (this.scene.isGameRunning) {
       return;
     }
 
@@ -61,6 +63,5 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     });
   }
 }
-
 
 export default Player;
