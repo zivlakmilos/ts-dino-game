@@ -5,6 +5,7 @@ class PlayScene extends Phaser.Scene {
   player: Player;
   ground: Phaser.GameObjects.TileSprite;
   startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  isGameRunning: boolean = false;
 
   constructor() {
     super('PlayScene');
@@ -46,6 +47,7 @@ class PlayScene extends Phaser.Scene {
             rollOutEvent.remove();
             this.ground.width = this.gameWidth;
             this.player.setVelocityX(0);
+            this.isGameRunning = true;
           }
         }
       });
