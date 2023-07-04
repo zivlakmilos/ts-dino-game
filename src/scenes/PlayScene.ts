@@ -1,11 +1,17 @@
 import Phaser from "phaser";
 import Player from "../entities/Player";
 import GameScene from "./GameScene";
+import { PRELOAD_CONFIG } from "..";
 
 class PlayScene extends GameScene {
   player: Player;
   ground: Phaser.GameObjects.TileSprite;
+  obstacles: Phaser.Physics.Arcade.Group;
   startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+
+  spawnInterval: number = 1500;
+  spawnTime: number = 0;
+  obstacleSpeed: number = 5;
 
   constructor() {
     super('PlayScene');
@@ -14,6 +20,8 @@ class PlayScene extends GameScene {
   create() {
     this.createEnvironment();
     this.createPlayer();
+
+    this.obstacles = this.physics.add.group();
 
     this.startTrigger = this.physics.add.sprite(0, 10, null)
       .setAlpha(0)
@@ -46,17 +54,44 @@ class PlayScene extends GameScene {
     });
   }
 
-  createEnvironment() {
-    this.ground = this.add
-      .tileSprite(0, this.gameHeight, 88, 26, 'ground')
-      .setOrigin(0, 1);
+  update(time: number, delta: number): void {
+    if (!this.isGameRunning) {
+      return;
+    }
+
+    this.spawnTime += delta;
+
+    if (this.spawnTime > this.spawnInterval) {
+      this.spawnTime = 0;
+      this.spawnObstacle();
+    }
+
+    Phaser.Actions.IncX(this.obstacles.getChildren(), -this.obstacleSpeed);
+
+    this.obstacles.getChildren().forEach((obstacle: Phaser.GameObjects.Sprite) => {
+      if (obstacle.getBounds().right < 0) {
+        this.obstacles.remove(obstacle);
+      }
+    });
   }
 
   createPlayer() {
     this.player = new Player(this, 0, this.gameHeight);
   }
 
-  update(time: number, delta: number): void {
+  createEnvironment() {
+    this.ground = this.add
+      .tileSprite(0, this.gameHeight, 88, 26, 'ground')
+      .setOrigin(0, 1);
+  }
+
+  spawnObstacle() {
+    const obstacleNum = Math.floor(Math.random() * PRELOAD_CONFIG.cactusesCount + 1)
+    const distance = Phaser.Math.Between(600, 900);
+
+    this.obstacles
+      .create(distance, this.gameHeight, `obstacle-${obstacleNum}`)
+      .setOrigin(0, 1);
   }
 }
 
