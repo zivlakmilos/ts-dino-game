@@ -9,6 +9,10 @@ class PlayScene extends GameScene {
   obstacles: Phaser.Physics.Arcade.Group;
   startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
+  gameOverContainer: Phaser.GameObjects.Container;
+  gameOverText: Phaser.GameObjects.Image;
+  restartText: Phaser.GameObjects.Image;
+
   spawnInterval: number = 1500;
   spawnTime: number = 0;
   gameSpeed: number = 5;
@@ -23,13 +27,29 @@ class PlayScene extends GameScene {
 
     this.obstacles = this.physics.add.group();
 
+    this.gameOverText = this.add.image(0, 0, 'game-over');
+    this.restartText = this.add.image(0, 80, 'restart').setInteractive();
+
+    this.gameOverContainer = this.add.container(this.gameWidth / 2, this.gameHeight / 2 - 50)
+      .add([this.gameOverText, this.restartText])
+      .setAlpha(0);
+
     this.startTrigger = this.physics.add.sprite(0, 10, null)
       .setAlpha(0)
       .setOrigin(0, 1);
 
+    this.restartText.on('pointerdown', () => {
+    });
+
     this.physics.add.collider(this.obstacles, this.player, () => {
-      this.physics.pause();
       this.isGameRunning = false;
+      this.physics.pause();
+
+      this.player.die();
+      this.gameOverContainer.setAlpha(1);
+
+      this.spawnTime = 0;
+      this.gameSpeed = 5;
     });
 
     this.physics.add.overlap(this.startTrigger, this.player, () => {
